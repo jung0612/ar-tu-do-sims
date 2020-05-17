@@ -1,0 +1,5 @@
+<launch>
+  <node name="gst" pkg="udp" type="gstreamer" output="screen">
+  </node>
+</launch>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find racer_control)/config/racer2_config.yaml" command="load"/>
+
+<!--  back_left_wheel_back_velocity_controller-->
+<!--  back_right_wheel_back_velocity_controller-->
+<!--  back_left_wheel_front_velocity_controller-->
+<!--  back_right_wheel_front_velocity_controller-->
+<!--  frontback_left_steering_hinge_position_controller-->
+<!--  frontback_right_steering_hinge_position_controller-->
+<!--  backback_left_steering_hinge_position_controller-->
+<!--  backback_right_steering_hinge_position_controller-->
+  <!-- load the controllers -->
+  <node 
+    name="controller_spawner2"
+    pkg="controller_manager" 
+    type="spawner" 
+    respawn="false"
+    output="screen" 
+    ns="/racer2"
+    args="left_wheel_back_velocity_controller
+          right_wheel_back_velocity_controller
+          left_wheel_front_velocity_controller
+          right_wheel_front_velocity_controller
+          frontfront_left_steering_hinge_position_controller
+          frontfront_right_steering_hinge_position_controller
+          backfront_left_steering_hinge_position_controller
+          backfront_right_steering_hinge_position_controller
+          --timeout 5000">
+    </node>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node
+    name="robot_state_publisher2"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+    respawn="false"
+    output="screen">
+
+    <remap from="/joint_states" to="/racer2/joint_states" />
+  </node>
+</launch>

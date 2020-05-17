@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="use_gpu" default="true"/>
+  <xacro:arg name="visualize_lidar" default="false"/>
+  <xacro:arg name="laser_sample_count" default="1080"/>
+
+  <!-- Gazebo plugins -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/racer</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+
+  <!-- Camera -->
+  <gazebo reference="camera">
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+	<pose>0 0 0 0 0 0</pose>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>450</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>100</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>racer/camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+
+    </sensor>
+  </gazebo>
+
+
+
+  <gazebo reference="camera">
+    <sensor type="camera" name="camera2">
+      <update_rate>30.0</update_rate>
+      
+      <camera name="head2">
+	<pose>-3.5 0 3.05 0  0.7</pose>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>450</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>racer/camera2</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <gazebo reference="camera">
+    <sensor type="camera" name="camera3">
+      <update_rate>30.0</update_rate>
+      
+      <camera name="head3">
+	<pose>0 0 0.05 0 0 -1.4</pose>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>450</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>racer/camera3</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <gazebo reference="Rbase">
+    <sensor name="force_torque" type="force_torque">
+      <update_rate>30</update_rate>
+    </sensor>
+  </gazebo>
+  <gazebo reference="Lbase">
+    <sensor name="force_torque" type="force_torque">
+      <update_rate>30</update_rate>
+    </sensor>
+  </gazebo>
+  <!-- IMU -->
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>200</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>100.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera">
+  <sensor type="depth" name="depthcamera">
+    <always_on>true</always_on>
+    <update_rate>20.0</update_rate>
+    <camera>
+      <horizontal_fov>1.4</horizontal_fov>
+      <image>
+        <format>R8G8B8</format>
+        <width>640</width>
+        <height>480</height>
+      </image>
+      <clip>
+        <near>0.01</near>
+        <far>5</far>
+      </clip>
+    </camera>
+    <plugin name="depth_plugin" filename="libgazebo_ros_openni_kinect.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>20.0</updateRate>
+      <cameraName>depth_plugin</cameraName>
+      <imageTopicName>depth_plugin/ir/image_raw</imageTopicName>
+      <cameraInfoTopicName>depth_plugin/ir/camera_info</cameraInfoTopicName>
+      <depthImageTopicName>depth_plugin/depth/image_raw</depthImageTopicName>
+      <depthImageCameraInfoTopicName>depth_plugin/depth/camera_info</depthImageCameraInfoTopicName>
+      <pointCloudTopicName>depth_plugin/depth/points</pointCloudTopicName>
+      <frameName>camera</frameName>
+      <pointCloudCutoff>0.5</pointCloudCutoff>
+      <distortionK1>0.00000001</distortionK1>
+      <distortionK2>0.00000001</distortionK2>
+      <distortionK3>0.00000001</distortionK3>
+      <distortionT1>0.00000001</distortionT1>
+      <distortionT2>0.00000001</distortionT2>
+      <CxPrime>0</CxPrime>
+      <Cx>0</Cx>
+      <Cy>0</Cy>
+      <focalLength>0</focalLength>
+      <hackBaseline>0</hackBaseline>
+    </plugin>
+  </sensor>
+  </gazebo>
+<!--  <gazebo>-->
+<!--    <plugin name="Myrobot_ClosedLoopPlugin" filename="libpegasus_gazebo_closed_loop_plugin.so">-->
+<!--      <joint>Rtrailer</joint>-->
+<!--      <child>baselinkerR</child>-->
+<!--&lt;!&ndash;      <parent>baselinkerL</parent>&ndash;&gt;-->
+<!--      <parent>trailer</parent>-->
+
+<!--      <position>0.0 0.0 0.0</position>-->
+<!--      <rotation>0.00 -0.00 0.00</rotation>-->
+<!--    </plugin>-->
+<!--  </gazebo>-->
+<!--  <gazebo reference="Rtrailer">-->
+<!--    <limit lower="-.01" upper=".01" effort="100" velocity="0.0"/>-->
+<!--  </gazebo>-->
+</robot>

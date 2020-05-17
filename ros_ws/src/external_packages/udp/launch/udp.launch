@@ -1,0 +1,4 @@
+<launch>
+  <node name="udp" pkg="udp" type="udp" output="screen">
+  </node>
+</launch>

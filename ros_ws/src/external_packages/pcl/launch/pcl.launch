@@ -1,0 +1,45 @@
+<launch>
+<!--     <node pkg="tf" type="static_transform_publisher" name="world_to_cam" args="0 0 0 0 0 0 1 /map /odom 1" /> -->
+  <node name="pcl_downsampling" pkg="pcl" type="pcl_downsampling" output="screen">
+  </node>
+<!--  -->
+  <node name="pcl" pkg="pcl" type="pcl" output="screen">
+  <param name="param1" value="100000"/>
+  <param name="param2" value="3"/>
+  <param name="param3" value="30"/>
+  <param name="param4" value="0.9"/>
+  <param name="param5" value="0.005"/>
+  <param name="param6" value="0.8"/>
+
+<!--   align.setMaximumIterations (param1); // Number of RANSAC iterations -->
+<!--   align.setNumberOfSamples (param2); // Number of points to sample for generating/prerejecting a pose 3 -->
+<!--   align.setCorrespondenceRandomness (param3); // Number of nearest features to use 20 -->
+<!--   align.setSimilarityThreshold (param4); // Polygonal edge length similarity threshold -->
+<!--   align.setMaxCorrespondenceDistance (2.5f * param5); // Inlier threshold 0.005 -->
+<!--   align.setInlierFraction (param6); // Required inlier fraction for accepting a pose hypothesis -->
+<!--    -->
+  </node>
+
+  <arg name="rgb_camera_info" value="/racer2/camera1/camera_info"/>
+  <arg name="rgb_rimg_ect" value="/racer2/camera1/image_raw"/>
+  <arg name="depReg_imgrect" value="/depth_plugin2/depth_plugin2/depth/image_raw"/>
+  <arg name="out_cloud" value="camera/depth_registered/points"/>
+
+<!--   <arg name="rgb_camera_info" value="/depth_plugin/depth_plugin/ir/camera_info"/> -->
+<!--   <arg name="rgb_rimg_ect" value="/depth_plugin/depth_plugin/ir/image_raw"/>  -->
+<!--   <arg name="depReg_imgrect" value="/depth_plugin/depth_plugin/depth/image_raw"/>   -->
+<!--   <arg name="out_cloud" value="camera/depth_registered/points"/> -->
+
+  <node pkg="nodelet" type="nodelet" name="standalone_nodelet" args="manager" output="screen"/>
+
+ <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pcl)/launch/pcl.rviz"/>
+  <!-- Construct point cloud of the rgb and depth topics -->
+  <node pkg="nodelet" type="nodelet" name="points_xyzrgb" args="load depth_image_proc/point_cloud_xyzrgb standalone_nodelet --no-bond">
+    <remap from="rgb/camera_info" to="$(arg rgb_camera_info)" />
+    <remap from="rgb/image_rect_color" to="$(arg rgb_rimg_ect)"/>
+    <remap from="depth_registered/image_rect" to="$(arg depReg_imgrect)"/>
+    <remap from="depth_registered/points" to="$(arg out_cloud)"/>
+  </node>
+
+
+</launch>
